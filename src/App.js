@@ -9,21 +9,15 @@
 import { Suspense, lazy } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import Html from "./Html";
-import Spinner from "./Spinner";
 import Layout from "./Layout";
-import NavBar from "./NavBar";
-import ProductGallery from "./components/product-gallery";
-import ProductInfo from "./components/product-info";
-import ProductList from "./components/product-list";
 
-// const Comments = lazy(() => import("./Comments" /* webpackPrefetch: true */));
-// const Sidebar = lazy(() => import("./Sidebar" /* webpackPrefetch: true */));
-// const Post = lazy(() => import("./Post" /* webpackPrefetch: true */));
+const ProductOverview = lazy(() => import("./components/product-overview/product-overview" /* webpackPrefetch: true */));
+const ProductList = lazy(() => import("./components/product-list/product-list" /* webpackPrefetch: true */));
 
-export default function App({ assets }) {
+export default function App() {
   return (
-    <Html assets={assets} title="Hello">
-      <Suspense fallback={<Spinner />}>
+    <Html title="Streaming SSR">
+      <Suspense fallback={"Loading"}>
         <ErrorBoundary FallbackComponent={Error}>
           <Content />
         </ErrorBoundary>
@@ -35,18 +29,15 @@ export default function App({ assets }) {
 function Content() {
   return (
     <Layout>
-      <NavBar />
-      <div className="bg-white">
-        <div className="max-w-4xl px-4 py-16 mx-auto sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
-          <div className="lg:grid lg:grid-cols-12 lg:gap-x-8">
-            <ProductGallery product={{}} />
-            <ProductInfo product={{}} cartId={""} />
-          </div>
-        </div>
-      </div>
-      {/* <Suspense fallback="Loading products"> */}
-      <ProductList />
-      {/* </Suspense> */}
+      <h1 style={{ padding: '2rem 0rem', textAlign: 'center' }}>
+        Streaming SSR
+      </h1>
+      <Suspense fallback="Loading product...">
+        <ProductOverview />
+      </Suspense>
+      <Suspense fallback="Loading products...">
+        <ProductList />
+      </Suspense>
     </Layout>
   );
 }
@@ -59,3 +50,4 @@ function Error({ error }) {
     </div>
   );
 }
+

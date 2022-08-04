@@ -11,17 +11,14 @@ import * as React from "react";
 import { renderToPipeableStream } from "react-dom/server";
 import App from "../src/App";
 import { DataProvider } from "../src/data";
-import { API_DELAY, ABORT_DELAY } from "./delays";
+import { createResource, storefrontClient } from "../src/lib";
+import { ABORT_DELAY } from "./delays";
 
-// In a real setup, you'd read it from webpack build stats.
-let assets = {
-  "main.js": "/main.js",
-  "main.css": "/main.css"
-};
 
 module.exports = function render(url, res) {
   // This is how you would wire it up previously:
   //
+
   // res.send(
   //   '<!DOCTYPE html>' +
   //   renderToString(
@@ -36,13 +33,20 @@ module.exports = function render(url, res) {
     console.error("Fatal", error);
   });
   let didError = false;
-  const data = createServerData();
+
+
+  const delay = (d = 1000) => new Promise(r => setTimeout(_ => r(_), d))
+
+  const productResource = createResource(storefrontClient.product.getProduct({ sku: 'FUR_BED_02' }))
+  const searchResource = createResource(delay(3000).then(() => storefrontClient.product.searchProducts({ keyword: 'Furniture' }, { first: 4 })))
+  const menuResource = createResource(storefrontClient.xm.getMenu())
+  const globalElements = createResource(storefrontClient.xm.getGlobalElements())
+
   const stream = renderToPipeableStream(
-    <DataProvider data={data}>
-      <App assets={assets} />
+    <DataProvider resources={{ product: productResource, search: searchResource, globalElements: globalElements, menu: menuResource }}>
+      <App />
     </DataProvider>,
     {
-      bootstrapScripts: [assets["main.js"]],
       onShellReady() {
         // If something errored before we started streaming, we set the error code appropriately.
         res.statusCode = didError ? 500 : 200;
@@ -51,7 +55,7 @@ module.exports = function render(url, res) {
       },
       onError(x) {
         didError = true;
-        console.error(x);
+        console.error({ x });
       }
     }
   );
@@ -59,29 +63,3 @@ module.exports = function render(url, res) {
   // Try lowering this to see the client recover.
   setTimeout(() => stream.abort(), ABORT_DELAY);
 };
-
-// Simulate a delay caused by data fetching.
-// We fake this because the streaming HTML renderer
-// is not yet integrated with real data fetching strategies.
-function createServerData() {
-  let done = false;
-  let promise = null;
-  return {
-    read() {
-      if (done) {
-        return;
-      }
-      if (promise) {
-        throw promise;
-      }
-      promise = new Promise((resolve) => {
-        setTimeout(() => {
-          done = true;
-          promise = null;
-          resolve();
-        }, API_DELAY);
-      });
-      throw promise;
-    }
-  };
-}

@@ -9,6 +9,9 @@
   "dependencies": {
     "@babel/core": "7.14.3",
     "@babel/register": "7.13.16",
+    "@fabric2/storefront-core": "^1.35.6-silicon-69",
+    "@headlessui/react": "^1.5.0",
+    "@heroicons/react": "^1.0.6",
     "babel-loader": "8.1.0",
     "babel-preset-react-app": "10.0.0",
     "compression": "^1.7.4",
@@ -18,12 +21,6 @@
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-error-boundary": "^3.1.3",
-    "@fabric2/storefront-core": "^1.35.6-silicon-69",
-    "@headlessui/react": "^1.5.0",
-    "@heroicons/react": "^1.0.6",
-    "@tailwindcss/aspect-ratio": "^0.4.0",
-    "@tailwindcss/typography": "^0.5.2",
-    "tailwind-merge": "^1.2.1",
     "resolve": "1.12.0",
     "rimraf": "^3.0.2",
     "webpack": "4.44.2",
@@ -36,7 +33,7 @@
   "scripts": {
     "start": "concurrently \"npm run server:dev\" \"npm run bundler:dev\"",
     "start:prod": "concurrently \"npm run server:prod\" \"npm run bundler:prod\"",
-    "server:dev": "cross-env NODE_ENV=development nodemon -- server/server.js",
+    "server:dev": "cross-env NODE_ENV=development nodemon -- server/server.js --inspect",
     "server:prod": "cross-env NODE_ENV=production nodemon -- server/server.js",
     "bundler:dev": "cross-env NODE_ENV=development nodemon -- scripts/build.js",
     "bundler:prod": "cross-env NODE_ENV=production nodemon -- scripts/build.js"

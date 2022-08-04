@@ -11,16 +11,16 @@
 const babelRegister = require('@babel/register');
 babelRegister({
   ignore: [/[\\\/](build|server\/server|node_modules)[\\\/]/],
-  presets: [['react-app', {runtime: 'automatic'}]],
+  presets: [['react-app', { runtime: 'automatic' }]],
   plugins: ['@babel/transform-modules-commonjs'],
 });
 
 const express = require('express');
 const compress = require('compression');
-const {readFileSync} = require('fs');
+const { readFileSync } = require('fs');
 const path = require('path');
 const render = require('./render');
-const {JS_BUNDLE_DELAY} = require('./delays');
+const { JS_BUNDLE_DELAY } = require('./delays');
 
 const PORT = process.env.PORT || 4000;
 const app = express();
@@ -38,7 +38,7 @@ app.use((req, res, next) => {
 app.use(compress());
 app.get(
   '/',
-  handleErrors(async function(req, res) {
+  handleErrors(async function (req, res) {
     await waitForWebpack();
     render(req.url, res);
   })
@@ -50,7 +50,7 @@ app
   .listen(PORT, () => {
     console.log(`Listening at ${PORT}...`);
   })
-  .on('error', function(error) {
+  .on('error', function (error) {
     if (error.syscall !== 'listen') {
       throw error;
     }
@@ -71,7 +71,7 @@ app
   });
 
 function handleErrors(fn) {
-  return async function(req, res, next) {
+  return async function (req, res, next) {
     try {
       return await fn(req, res);
     } catch (x) {

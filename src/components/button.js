@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import React, { forwardRef, useState } from "react";
 
 const Button = forwardRef(function Button(props, ref) {
@@ -29,10 +28,6 @@ const Button = forwardRef(function Button(props, ref) {
       {...restProps}
       ref={ref}
       onClick={handleClick}
-      className={clsx(
-        "flex justify-center items-center ring-2 ring-dark ring-offset-2 bg-dark text-white border-dark border-solid border-2 h-[4rem] text-sm rounded-[40px]",
-        isLoading ? "" : ""
-      )}
     >
       {startIconElement}
       {buttonTextElement}

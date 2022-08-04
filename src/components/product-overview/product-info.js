@@ -1,33 +1,31 @@
-import { storefrontClient } from "@/lib/storefront-client";
+import { storefrontClient } from "../../lib";
 import { Fragment } from "react";
-import { ProductGetters } from "../helpers";
+import { getTitle, getPrice, getBrand, getFormattedPrice, getDescription, getSku } from "./helpers";
 
-export function ProductInfo({ product, cartId }) {
-  const productGetters = new ProductGetters(product);
-
+export default function ProductInfo({ product }) {
   return (
-    <div className="flex flex-col lg:col-start-8 lg:col-span-5 px-4 mt-10 w-100 sm:mt-16 sm:px-0 lg:mt-0">
+    <div className="flex flex-col px-4 mt-10 lg:col-start-8 lg:col-span-5 w-100 sm:mt-16 sm:px-0 lg:mt-0">
       <span className="text-xl font-normal text-dark">
-        {productGetters.getBrand()}
+        {getBrand(product)}
       </span>
       <h1 className="text-6xl font-light text-dark">
-        {productGetters.getTitle()}
+        {getTitle(product)}
       </h1>
 
       <div className="mt-4">
         <h2 className="sr-only">Product Price</h2>
-        {productGetters.getPrice(product.price).sale ? (
+        {getPrice(product.price).sale ? (
           <Fragment>
-            <span className="text-sm line-through text-dark pr-2">
+            <span className="pr-2 text-sm line-through text-dark">
               {
-                productGetters.getFormattedPrice(product.price, {
+                getFormattedPrice(product.price, {
                   locale: "en-US"
                 }).base
               }
             </span>
             <span className="text-xl text-dark">
               {
-                productGetters.getFormattedPrice(product.price, {
+                getFormattedPrice(product.price, {
                   locale: "en-US"
                 }).sale
               }
@@ -36,7 +34,7 @@ export function ProductInfo({ product, cartId }) {
         ) : (
           <span className="text-2xl text-dark">
             {
-              productGetters.getFormattedPrice(product.price, {
+              getFormattedPrice(product.price, {
                 locale: "en-US"
               }).base
             }
@@ -48,13 +46,13 @@ export function ProductInfo({ product, cartId }) {
         <h3 className="sr-only">Description</h3>
 
         <div className="space-y-6 text-base text-dark" />
-        {productGetters.getDescription()}
+        {getDescription(product)}
       </div>
 
       <div className="flex flex-row mt-4">
         <h2 className="sr-only">Product SKU</h2>
         <span className="pr-6 text-sm font-extrabold">SKU</span>
-        <span className="text-sm">{productGetters.getSku()}</span>
+        <span className="text-sm">{getSku(product)}</span>
       </div>
       <div className="flex mt-20">
         <button
